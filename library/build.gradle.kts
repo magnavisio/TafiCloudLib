@@ -1,11 +1,11 @@
-import com.android.builder.model.AndroidLibrary
-import org.jetbrains.kotlin.fir.resolve.withExpectedType
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     id("module.publication")
     `maven-publish`
+    kotlin("plugin.serialization") version libs.versions.kotlin
 }
 
 group = "com.magnavisio"
@@ -14,30 +14,85 @@ version = "0.0.1"
 kotlin {
     targetHierarchy.default()
     jvm()
-    androidTarget {
-        publishLibraryVariants("release")
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
+    js(IR) {
+        browser()
+        nodejs()
+    }
+//    androidTarget {
+//        publishLibraryVariants("release")
+//        compilations.all {
+//            kotlinOptions {
+//                jvmTarget = "1.8"
+//            }
+//        }
+//    }
+
+    val xcFrameworkName = "TafiCloud"
+    val xcf = XCFramework(xcFrameworkName)
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach {
+        it.binaries.framework {
+            baseName = xcFrameworkName
+
+            // Specify CFBundleIdentifier to uniquely identify the framework
+            binaryOption("bundleId", "com.magnavisio.${xcFrameworkName}")
+            xcf.add(this)
+            isStatic = true
         }
     }
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+
     linuxX64()
 
+
     sourceSets {
+        val ktorVersion = "2.3.12"
+
         val commonMain by getting {
             dependencies {
-                //put your multiplatform dependencies here
+                implementation("io.ktor:ktor-client-core:$ktorVersion")
+                implementation("io.ktor:ktor-client-logging:$ktorVersion")
+                implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
             }
         }
+
         val commonTest by getting {
             dependencies {
                 implementation(libs.kotlin.test)
             }
         }
+
+        val jvmMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-client-apache5:$ktorVersion")
+                implementation("ch.qos.logback:logback-classic:1.5.5")
+
+            }
+        }
+
+        val jsMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-client-js:$ktorVersion")
+            }
+        }
+
+        val nativeMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-client-cio:$ktorVersion")
+            }
+        }
+
+//        val androidMain by getting {
+//            dependencies {
+//                implementation("io.ktor:ktor-client-android:$ktorVersion")
+//            }
+//        }
+
     }
 }
 
@@ -49,9 +104,9 @@ android {
     }
 }
 
+
 publishing {
     publications {
-        println(this)
         withType<MavenPublication> {
             val target = this.name
             if (target == "kotlinMultiplatform") {
