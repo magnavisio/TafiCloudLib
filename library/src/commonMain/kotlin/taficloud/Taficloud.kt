@@ -5,8 +5,9 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import taficloud.errors.errorHandler
 import taficloud.models.ApiResponse
 import taficloud.models.MediaFile
@@ -52,6 +53,7 @@ class Taficloud(private val apiKey: String) {
     }
 
     /**
+     * Upload a file in base64 format
      * @param file the file in base64 format string
      * @param folder the folder name the file should be uploaded to
      */
@@ -62,18 +64,19 @@ class Taficloud(private val apiKey: String) {
                 setBody(buildJsonObject {
                     put("file", file)
                     put("folder", folder)
-                })
+                }.encodeToString())
             }.body<ApiResponse<MediaFile>>()
             response.data
         }
     }
 
     /**
+     * Upload multiple files
      * @param files is a map of the file ByteArray to the file name(with extension)
      */
     suspend fun uploadMultiple(files: Map<ByteArray, String>) {
         return handleRequest {
-            client.submitFormWithBinaryData(url = "/media/upload", formData = formData {
+            client.submitFormWithBinaryData(url = "media/upload/multiple", formData = formData {
                 files.forEach {
                     val fileName = it.value
                     append("files", it.key, Headers.build {
@@ -87,19 +90,29 @@ class Taficloud(private val apiKey: String) {
         }
     }
 
-
+    /**
+     * Download a file by the key
+     */
     suspend fun downloadFile(key: String): ByteArray {
         return handleRequest {
             client.get("media/download") {
                 appendAuth()
-                request {
-                    parameter("media", key)
-                    parameter("download", true)
+                url {
+                    parameters.append("media", key)
+                    parameters.append("download", "true")
                 }
             }.readBytes()
         }
     }
 
+    /**
+     * Compress a png file
+     * @param compressionLevel: 0 (no compression) to 9 (maximum compression).
+     * @param adaptiveFiltering: Use adaptive filtering (true/false).
+     * @param palette: Use palette-based color reduction (true/false).
+     * @param quality: 0 to 100 (if palette is true).
+     * @param effort: 0 (fastest) to 10 (slowest).
+     */
     suspend fun compressPng(
         file: ByteArray,
         fileName: String,
@@ -128,9 +141,7 @@ class Taficloud(private val apiKey: String) {
         client.submitFormWithBinaryData(
             url = "/media/compress-img-file",
             formData = formData {
-                append("options", options.let {
-                    Json.encodeToString(it)
-                })
+                append("options", options.encodeToString())
                 appendFile(file, fileName)
             }) {
             appendAuth()
@@ -138,6 +149,13 @@ class Taficloud(private val apiKey: String) {
 
     /**
      * Convert **.jpg** and **.jpeg** images
+     * @param quality: 0 to 100.
+     * @param progressive: Create a progressive JPEG (true/false).
+     * @param chromaSubsampling: '4:4:4', '4:2:2', or '4:2:0'.
+     * @param trellisQuantisation: Use trellis quantization (true/false).
+     * @param overshootDeringing: Use overshoot deringing (true/false).
+     * @param optimizeScans: Optimize scans for progressive JPEG (true/false).
+     * @param mozjpeg: Use MozJPEG for compression (true/false).
      */
     suspend fun compressJpg(
         file: ByteArray,
@@ -167,6 +185,19 @@ class Taficloud(private val apiKey: String) {
         }
     }
 
+    /**
+     * @param quality: 0 to 100.
+     *
+     * @param alphaQuality: 0 to 100.
+     *
+     * @param lossless: Use lossless compression (true/false).
+     *
+     * @param nearLossless: Use near-lossless compression (true/false).
+     *
+     * @param smartSubSample: Use smart subsampling (true/false).
+     *
+     * @param effort: 0 (fastest) to 10 (slowest).
+     */
     suspend fun compressWebp(
         file: ByteArray,
         fileName: String,
@@ -193,6 +224,17 @@ class Taficloud(private val apiKey: String) {
         }
     }
 
+
+    /**
+     * @param quality: 0 to 100.
+     * @param compression: 'lzw', 'deflate', or 'jpeg'.
+     * @param predictor: 'none', 'horizontal', or 'float'.
+     * @param tile: Use tiling (true/false).
+     * @param tileWidth: Tile width (if tile is true).
+     * @param tileHeight: Tile height (if tile is true).
+     * @param pyramid: Create a multi-resolution pyramid image (true/false).
+     * @param bitdepth: 8 or 16.
+     */
     suspend fun compressTiff(
         file: ByteArray,
         fileName: String,
@@ -223,6 +265,10 @@ class Taficloud(private val apiKey: String) {
         }
     }
 
+    /**
+     * @param reoptimise: Re-optimize the GIF (true/false).
+     * @param effort: 0 (fastest) to 10 (slowest).
+     */
     suspend fun compressGif(
         file: ByteArray,
         fileName: String,
@@ -241,6 +287,12 @@ class Taficloud(private val apiKey: String) {
         }
     }
 
+    /**
+     * @param quality: 0 to 100.
+     * @param lossless: Use lossless compression (true/false).
+     * @param speed: 0 (slowest) to 10 (fastest).
+     * @param chromaSubsampling: '4:4:4', '4:2:2', or '4:2:0'.
+     */
     suspend fun compressAvif(
         file: ByteArray,
         fileName: String,
@@ -262,36 +314,4 @@ class Taficloud(private val apiKey: String) {
             )
         }
     }
-
-    suspend fun deleteMedia(id: Int): String {
-        return handleRequest {
-            client.delete("/media/$id") {
-                appendAuth()
-            }.body<ApiResponse<String>>().data
-        }
-    }
-
-    /**
-     * Delete multiple files
-     * @param files lost of file Id's
-     */
-    suspend fun bulkDelete(files: List<Int>) {
-        return handleRequest {
-            client.delete("/media/bulk/delete") {
-                appendAuth()
-                setBody(buildJsonObject {
-                    put("files", buildJsonArray {
-                        files.forEach { fileId ->
-                            add(buildJsonObject {
-                                put("type", "file")
-                                put("id", fileId)
-                            })
-                        }
-                    })
-                })
-            }.body<ApiResponse<JsonObject>>().message
-        }
-    }
-
-
 }

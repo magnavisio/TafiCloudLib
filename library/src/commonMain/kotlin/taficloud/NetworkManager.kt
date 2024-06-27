@@ -18,6 +18,9 @@ internal class NetworkManager(engine: HttpClientEngine) {
         install(Logging) {
             level = LogLevel.BODY
         }
+        install(HttpTimeout){
+            socketTimeoutMillis = 2000
+        }
         install(ContentNegotiation) {
             json()
         }

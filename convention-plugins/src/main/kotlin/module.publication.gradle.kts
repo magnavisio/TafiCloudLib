@@ -1,7 +1,3 @@
-import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.tasks.bundling.Jar
-import org.gradle.kotlin.dsl.`maven-publish`
-
 plugins {
     `maven-publish`
     signing
@@ -30,9 +26,9 @@ publishing {
             }
             developers {
                 developer {
-                    id.set("JetBrains")
-                    name.set("JetBrains Team")
-                    organization.set("JetBrains")
+                    id.set("Magnavisio")
+                    name.set("Magnavisio Team")
+                    organization.set("Magnaviso")
                     organizationUrl.set("https://www.jetbrains.com")
                 }
             }

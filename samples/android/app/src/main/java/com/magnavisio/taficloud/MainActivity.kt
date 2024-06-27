@@ -11,12 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.magnavisio.taficloud.ui.theme.AndroidTheme
-import fibi
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fibi
         setContent {
             AndroidTheme {
                 // A surface container using the 'background' color from the theme
