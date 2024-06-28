@@ -20,7 +20,7 @@ suspend fun main() {
 
             "uploadBase64" -> {
                 val file = File("src/main/resources/coolio.png")
-                val response = taficloud.uploadBase64(Base64.encode(file.readBytes()), "samples")
+                val response = taficloud.uploadBase64(System.getenv("fileBase64"),"samples")
                 println(response)
             }
 
@@ -65,11 +65,6 @@ suspend fun main() {
                 println(response)
             }
 
-            "deleteMedia" -> {
-                val response = taficloud.deleteMedia(77)
-                println(response)
-            }
-
             "help" -> {
                 println("Taficloud lib jvm sample")
                 println("Use the following functions to test different functions:")
@@ -85,3 +80,7 @@ suspend fun main() {
         println("Func complete")
     } while (func != null)
 }
+
+//fun main() {
+//
+//}
