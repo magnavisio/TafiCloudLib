@@ -16,7 +16,7 @@ internal class NetworkManager(engine: HttpClientEngine) {
             url("https://cloudloom-api-dev.craftme.dev")
         }
         install(Logging) {
-            level = LogLevel.BODY
+            level = LogLevel.ALL
         }
         install(HttpTimeout){
             socketTimeoutMillis = 2000

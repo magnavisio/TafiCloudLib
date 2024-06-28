@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    id("module.publication")
+//    id("module.publication")
     `maven-publish`
     kotlin("plugin.serialization") version libs.versions.kotlin
 }
