@@ -14,7 +14,7 @@ repositories {
 dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     implementation("com.magnavisio:taficloud-jvm:0.0.1")
-//    implementation("com.github.MagnaVisioTechonlogies:TafiCloudLib:1.0.0")
+    implementation("com.github.magnavisio:TafiCloudLib:0.0.1")
 }
 
 tasks.test {
