@@ -6,23 +6,28 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.json.Json
 
 
 internal expect val networkManager: NetworkManager
 
 internal class NetworkManager(engine: HttpClientEngine) {
     val client: HttpClient = HttpClient(engine) {
-        defaultRequest{
+        defaultRequest {
             url("https://cloudloom-api-dev.craftme.dev")
         }
         install(Logging) {
             level = LogLevel.ALL
         }
-        install(HttpTimeout){
+        install(HttpTimeout) {
             socketTimeoutMillis = 2000
         }
         install(ContentNegotiation) {
-            json()
+            json(
+                Json {
+                    ignoreUnknownKeys = true
+                }
+            )
         }
     }
 }

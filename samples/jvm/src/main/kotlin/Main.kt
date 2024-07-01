@@ -2,10 +2,7 @@ package com.magnavisio.taficloud
 
 import taficloud.Taficloud
 import java.io.File
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
-@OptIn(ExperimentalEncodingApi::class)
 suspend fun main() {
     val taficloud = Taficloud(System.getenv("apiKey"))
     println("Enter func")

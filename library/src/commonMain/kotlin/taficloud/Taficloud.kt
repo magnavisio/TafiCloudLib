@@ -10,6 +10,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import taficloud.errors.errorHandler
 import taficloud.models.ApiResponse
+import taficloud.models.Media
 import taficloud.models.MediaFile
 
 class Taficloud(private val apiKey: String) {
@@ -74,7 +75,7 @@ class Taficloud(private val apiKey: String) {
      * Upload multiple files
      * @param files is a map of the file ByteArray to the file name(with extension)
      */
-    suspend fun uploadMultiple(files: Map<ByteArray, String>) {
+    suspend fun uploadMultiple(files: Map<ByteArray, String>): List<MediaFile> {
         return handleRequest {
             client.submitFormWithBinaryData(url = "media/upload/multiple", formData = formData {
                 files.forEach {
@@ -86,7 +87,7 @@ class Taficloud(private val apiKey: String) {
                 }
             }) {
                 appendAuth()
-            }.body<ApiResponse<MediaFile>>()
+            }.body<ApiResponse<Media>>().data.media
         }
     }
 

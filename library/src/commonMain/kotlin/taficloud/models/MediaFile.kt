@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MediaFile (
+data class MediaFile(
     val id: Long,
     @SerialName("organizationId")
     val organizationID: Long,
@@ -16,13 +16,18 @@ data class MediaFile (
     val size: Double,
     val metaData: MetaData,
     @SerialName("folderId")
-    val folderID: Long,
+    val folderId: Long? = null,
     val updatedAt: String,
-    val createdAt: String
+    val createdAt: String,
 )
 
 @Serializable
-data class MetaData (
+data class MetaData(
     val ipAddress: String,
-    val userAgent: String
+    val userAgent: String,
+)
+
+@Serializable
+data class Media(
+    val media: List<MediaFile>,
 )
