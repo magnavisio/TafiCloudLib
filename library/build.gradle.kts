@@ -110,9 +110,9 @@ publishing {
         withType<MavenPublication> {
             val target = this.name
             if (target == "kotlinMultiplatform") {
-                artifactId = "taficloud"
+                artifactId = "TafiCloudLib"
             } else {
-                artifactId = "taficloud-$target"
+                artifactId = "TafiCloudLib-$target"
 //                artifact(javaDocJar)
 //                from(components["java"])
 //                artifact(tasks.sourcesJar)
