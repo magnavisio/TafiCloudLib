@@ -8,15 +8,13 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
     mavenLocal()
-    maven {
-        setUrl("https://jitpack.io")
-    }
+    maven("https://jitpack.io")
 }
 
 dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
-//    implementation("com.magnavisio:taficloud-jvm:0.0.1")
-    implementation("com.github.magnavisio.TafiCloudLib:taficloud-jvm:0.0.3")
+    implementation("com.magnavisio:taficloud-jvm:0.0.1")
+    implementation("com.github.magnavisio.TafiCloudLib:taficloud:0.0.3")
 }
 
 tasks.test {
