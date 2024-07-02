@@ -110,6 +110,7 @@ publishing {
         withType<MavenPublication> {
             val target = this.name
             if (target == "kotlinMultiplatform") {
+                //artifact id must match for jitpacks
                 artifactId = "TafiCloudLib"
             } else {
                 artifactId = "TafiCloudLib-$target"
