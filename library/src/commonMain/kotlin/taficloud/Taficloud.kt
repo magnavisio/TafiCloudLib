@@ -18,7 +18,7 @@ class Taficloud(private val apiKey: String) {
     private val client = networkManager.client
 
     /**
-     * @param fileName the file name wirth the extension
+     * @param fileName the file name with the extension
      */
     suspend fun upload(file: ByteArray, fileName: String, folder: String): MediaFile {
         return handleRequest {

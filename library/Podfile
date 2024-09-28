@@ -1,0 +1,6 @@
+platform :ios, '11.0'
+use_frameworks!
+
+target 'TafiCloud' do
+  pod 'TafiCloudIOS', :path => '../' # Adjust the path to your library
+end

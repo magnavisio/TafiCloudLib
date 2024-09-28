@@ -14,7 +14,7 @@ internal expect val networkManager: NetworkManager
 internal class NetworkManager(engine: HttpClientEngine) {
     val client: HttpClient = HttpClient(engine) {
         defaultRequest {
-            url("https://cloudloom-api-dev.craftme.dev")
+            url("https://stash.taficloud.com")
         }
         install(Logging) {
             level = LogLevel.ALL

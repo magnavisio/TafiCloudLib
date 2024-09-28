@@ -6,6 +6,7 @@ plugins {
 //    id("module.publication")
     id("maven-publish")
     kotlin("plugin.serialization") version libs.versions.kotlin
+    id("org.jetbrains.kotlin.native.cocoapods")
 }
 
 group = "com.magnavisio"
@@ -32,7 +33,7 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        // iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
             baseName = xcFrameworkName
@@ -41,6 +42,15 @@ kotlin {
             binaryOption("bundleId", "com.magnavisio.${xcFrameworkName}")
             xcf.add(this)
             isStatic = true
+        }
+    }
+
+    cocoapods {
+        summary = "TafiCloud Library for iOS"
+        homepage = "https://docs.taficloud.com"
+        ios.deploymentTarget = "11.0"
+        framework {
+            baseName = "TafiCloudIOS"
         }
     }
 
@@ -85,6 +95,11 @@ kotlin {
             dependencies {
                 implementation("io.ktor:ktor-client-cio:$ktorVersion")
             }
+        }
+
+        sourceSets {
+            val iosMain by getting
+            val iosTest by getting
         }
 
 //        val androidMain by getting {
