@@ -1,3 +1,4 @@
+// swift-tools-version: 6.0
 import PackageDescription
 
 let package = Package(
@@ -9,6 +10,7 @@ let package = Package(
             targets: ["TafiCloud"]
         ),
     ],
+    dependencies: [],
     targets: [
         .binaryTarget(
             name: "TafiCloud",
