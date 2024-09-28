@@ -1,14 +1,14 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'TafiCloud'
-    spec.version                  = '0.0.3'
+    spec.version                  = '0.0.5'
     spec.homepage                 = 'https://docs.taficloud.com'
-    spec.source                   = { :git => 'https://github.com/magnavisio/TafiCloudLib.git', :tag => '0.0.3'}
+    spec.source                   = { :git => 'https://github.com/magnavisio/TafiCloudLib.git', :tag => '0.0.5'}
     spec.authors                  = 'MagnaVisio'
     spec.license                  = { :type => 'MIT', :file => 'LICENSE' }
     spec.summary                  = 'TafiCloud Library for iOS'
     spec.vendored_frameworks      = 'build/xcframework/TafiCloud.xcframework'
     spec.libraries                = 'c++'
-    spec.ios.deployment_target = '11.0'
+    spec.ios.deployment_target = '12.0'
 
 
     if !Dir.exist?('build/xcframework/TafiCloud.xcframework') || Dir.empty?('build/xcframework/TafiCloud.xcframework')
